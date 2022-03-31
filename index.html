@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vega-Lite</title>
+    <meta charset="utf-8" />
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.21.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.2"></script>
+
+    <style media="screen">
+      /* Add space between Vega-Embed links  */
+      .vega-actions a {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>POPULATION&nbsp;DASHBOARD</h1>
+    <!-- Container for the visualization -->
+    <div id="vis"></div>
+
+    <script>
+      // Assign the specification to a local variable vlSpec.
+      var vlSpec = {
+        
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "title": "จำนวนประชากรแบ่งตามเขตปกครองกรุงเทพมหานคร",
+            "params": [{"name": "selectBKK", "select": "point"}],
+            "data": {
+              "url": "https://raw.githubusercontent.com/Nicevoltage/choropleth/main/bma_zone.json",
+              "format": {"type": "topojson", "feature": "bma_zone"}
+            },
+            "vconcat": [
+              {
+                "width": 500,
+                "height": 300,
+                "projection": {"type": "mercator"},
+                "mark": "geoshape",
+                "encoding": {
+                      "color": {
+                        "condition": {
+                          "param": "selectBKK",
+                          "field": "properties.z_name_e",
+                          "type": "nominal",
+                          "title": ""
+                        },
+                        "value":"gray"
+                      },
+                      "opacity":{"condition": {"param": "selectBKK","value":1}, "value":0.2}
+                
+                }
+              },
+              {
+                "width":400,
+                "height" :300,
+                "mark":"bar",
+                "params": [{
+                  "name": "selectBKK",
+                  "select":{"type": "point", "encodings": ["x"],
+                  "on":"mouseover"}
+                  
+                }],
+                "title":"แผนภูมิแสดงจำนวนเพศชาย",
+                "encoding": {
+                  "x":{"field":"properties.z_name_e","type": "nominal","title":"เขตการปกครองของกรุงเทพมหานคร"},
+                  "y":{"field":"properties.no_male","type": "quantitative","title":"จำนวนเพศชาย"},
+                  "color":{
+                    "condition":{
+                      "param": "selectBKK",
+                      "field":"properties.z_name_e",
+                      "title":""
+                      
+                    },
+                    "value":"gray"
+                  },
+                  "opacity":{
+                    "condition":{
+                      "param": "selectBKK",
+                      "value":1
+                    },
+                    "value":0.5
+                  }
+                }
+              },
+              {
+                "width":400,
+                "height" :300,
+                "mark":"bar",
+                "params": [{
+                  "name": "selectBKK",
+                  "select":{"type": "point", "encodings": ["x"],
+                  "on":"mouseover"}
+                  
+                }],
+                "title":"แผนภูมิแสดงจำนวนเพศหญิง",
+                "encoding": {
+                  "x":{"field":"properties.z_name_e","type": "nominal","title":"เขตการปกครองของกรุงเทพมหานคร"},
+                  "y":{"field":"properties.no_female","type": "quantitative","title":"จำนวนเพศหญิง"},
+                  "color":{
+                    "condition":{
+                      "param": "selectBKK",
+                      "field":"properties.z_name_e",
+                      "title":""
+                      
+                    },
+                    "value":"gray"
+                  },
+                  "opacity":{
+                    "condition":{
+                      "param": "selectBKK",
+                      "value":1
+                    },
+                    "value":0.5
+                  }        
+                }
+              }
+          
+            ]
+          
+          
+          
+        }
+
+      // Embed the visualization in the container with id `vis`
+      vegaEmbed('#vis', vlSpec);
+    </script>
+  </body>
+</html>
